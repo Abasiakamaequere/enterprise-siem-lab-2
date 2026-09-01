@@ -62,9 +62,13 @@ Ubuntu Server
        │
        ▼
 Splunk Enterprise
+```
 
-Initial Laboratory Architecture
+### Initial Laboratory Architecture
+
 At the infrastructure-provisioning stage, the environment consisted primarily of the virtualized Ubuntu Server that would later host Splunk Enterprise.
+
+```text
                     Physical Host
                          │
                          │
@@ -80,9 +84,11 @@ At the infrastructure-provisioning stage, the environment consisted primarily of
               │  35 GB Disk       │
               │  Bridged Network  │
               └───────────────────┘
+```
+
 The environment was subsequently expanded to include a Windows endpoint and Splunk Universal Forwarder.
 
-Design Considerations
+### Design Considerations
 
 The laboratory was designed around several practical constraints:
 
@@ -102,7 +108,7 @@ Virtualization provided a controlled environment in which security monitoring, t
 
 The initial Ubuntu Server deployment was intended to become the central SIEM component of a larger laboratory containing endpoint telemetry and security-analysis capabilities.
 
-Result
+### Result
 
 The VirtualBox infrastructure provided the foundation for the subsequent deployment of:
 
@@ -118,14 +124,3 @@ Detection and threat-hunting workflows
 Next Stage
 
 The next stage was the installation and initial configuration of the Ubuntu Server operating system, which became the foundation for the Splunk SIEM deployment.
-
----
-
-# 4. Commit the file
-
-Scroll to the bottom.
-
-For the commit message, enter:
-
-```text
-Document VirtualBox laboratory provisioning
