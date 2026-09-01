@@ -228,8 +228,8 @@ The package-management environment was restored, allowing the Splunk deployment 
 The next stage focused on resolving Splunk's service-execution privilege requirements and implementing a dedicated unprivileged service account.
 
 Related Documentation
-01-virtualbox.md — Virtual machine provisioning
-02-ubuntu-server.md — Ubuntu Server deployment
-03-networking.md — Network troubleshooting and package transfer
-05-privilege-separation.md — Splunk least-privilege configuration
-troubleshooting/filesystem-recovery.md — Detailed recovery procedure
+* 01-virtualbox.md — Virtual machine provisioning
+* 02-ubuntu-server.md — Ubuntu Server deployment
+* 03-networking.md — Network troubleshooting and package transfer
+* 05-privilege-separation.md — Splunk least-privilege configuration
+* troubleshooting/filesystem-recovery.md — Detailed recovery procedure
