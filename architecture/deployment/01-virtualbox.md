@@ -112,14 +112,14 @@ The initial Ubuntu Server deployment was intended to become the central SIEM com
 
 The VirtualBox infrastructure provided the foundation for the subsequent deployment of:
 
-*Ubuntu Server
-*Splunk Enterprise
-*Splunk Web
-*Splunk Universal Forwarder
-*Windows endpoint telemetry
-*Sysmon
-*Security investigations
-*Detection and threat-hunting workflows
+**Ubuntu Server
+**Splunk Enterprise
+**Splunk Web
+**Splunk Universal Forwarder
+**Windows endpoint telemetry
+**Sysmon
+**Security investigations
+**Detection and threat-hunting workflows
 
 ### Next Stage
 
