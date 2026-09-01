@@ -57,7 +57,7 @@ The server therefore forms the bridge between the infrastructure layer and the S
 │                  Security Data       │
 └──────────────────────────────────────┘
 ```
-### Initial Configuration
+## Initial Configuration
 
 The Ubuntu Server was prepared as the foundation for the Splunk deployment.
 
@@ -72,7 +72,7 @@ The configuration process included:
 
 The server was subsequently used to acquire, transfer, install, recover, and operate Splunk Enterprise.
 
-### Network Validation
+## Network Validation
 
 Network connectivity was an important prerequisite for the Splunk installation.
 
@@ -86,7 +86,7 @@ This issue is documented separately in:
 
 The network troubleshooting process ultimately resulted in an IPv4-based workaround and an alternative package-transfer approach.
 
-### Storage Considerations
+## Storage Considerations
 
 The Ubuntu Server was deployed using the previously documented:
 
@@ -96,7 +96,7 @@ Storage became particularly important during the Splunk installation because the
 
 The recovery process is documented in the troubleshooting section of the repository.
 
-### Resource Considerations
+## Resource Considerations
 
 The server operated within the constrained laboratory configuration of:
 
@@ -108,21 +108,21 @@ These limitations were important engineering considerations when deploying Splun
 
 The installation process demonstrated that SIEM platforms can impose significant resource requirements even within a small laboratory environment.
 
-### Security Considerations
+## Security Considerations
 
 The Ubuntu Server was not treated simply as an application host.
 
 Security considerations included:
 
-### Least privilege
+## Least privilege
 
 Splunk was ultimately configured to operate using a dedicated unprivileged service account rather than unrestricted root execution.
 
-### Controlled environment
+## Controlled environment
 
 The server operates within a sandboxed VirtualBox laboratory.
 
-### Service separation
+## Service separation
 
 The Splunk service identity was separated from normal administrative privileges.
 
@@ -147,7 +147,7 @@ These included:
 
 These challenges were not treated as reasons to abandon the deployment. Instead, they became part of the troubleshooting and recovery process.
 
-### Recovery Dependency
+## Recovery Dependency
 
 Following a system-level failure during the Splunk installation, the Ubuntu Server entered an emergency recovery state.
 
@@ -171,7 +171,7 @@ The detailed recovery procedure is documented separately under:
 
 troubleshooting/
 
-### Result
+## Result
 
 The Ubuntu Server successfully became the Linux foundation for the SIEM laboratory.
 
@@ -185,7 +185,7 @@ The completed infrastructure enabled:
 * SPL-based investigation
 * Dashboard development
 
-### Next Stage
+## Next Stage
 
 With the Ubuntu Server prepared, the next stage focused on establishing reliable network connectivity and acquiring the Splunk Enterprise installation package.
 
