@@ -72,13 +72,19 @@ The network path was technically usable, but the available transfer rate made di
 Rather than continuing with the extremely slow transfer inside the Ubuntu environment, the package was acquired through the Windows host.
 
 The workflow was changed to:
+
 Splunk Download
+
       ↓
 Windows Host
+      
       ↓
+
 SCP
+
       ↓
 Ubuntu Server
+
 This separated the external package acquisition problem from the internal laboratory transfer.
 
 ## Cross-Platform Transfer
