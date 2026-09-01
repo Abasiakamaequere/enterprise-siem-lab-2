@@ -44,7 +44,9 @@ This distinction was important because the Splunk package itself had not yet bee
 ## IPv4 Workaround
 
 The download command was modified to explicitly force IPv4.
+
 wget -4 -O splunk-10.4.2.deb "https://download.splunk.com/..."
+
 The -4 option forced the connection to use IPv4 rather than IPv6.
 
 This bypassed the problematic IPv6 connection path.
@@ -55,8 +57,10 @@ Although forcing IPv4 addressed the connection problem, the download remained ex
 
 The observed transfer rate dropped to approximately:
 33.9 KB/s
+
 The Splunk Enterprise package was approximately:
 1.24 GB
+
 At this transfer rate, continuing to download the package directly inside the Ubuntu VM would have been highly inefficient.
 
 This created a second engineering problem:
@@ -86,14 +90,17 @@ The transfer used the Ubuntu server's SSH service.
 Example PowerShell command:
 scp "$env:USERPROFILE\Downloads\splunk-10.4.2-linux-amd64.deb" `
 equere_splunkadmin@<LAB-IP>:/home/equere_splunkadmin/
+
 The local laboratory IP address is intentionally represented as:
 <LAB-IP>
+
 in the public documentation rather than exposing the actual private network address.
 
 ## Transfer Performance
 
 The cross-platform transfer achieved approximately:
 13.6 MB/s
+
 This represented a major improvement over the approximately 33.9 KB/s download speed experienced directly from the Ubuntu VM.
 
 The package transfer therefore became practical within the laboratory workflow.
@@ -122,6 +129,7 @@ The problem demonstrated the importance of separating different parts of a netwo
 
 The original failure could have been incorrectly interpreted as:
 "Splunk download is broken."
+
 However, the troubleshooting process identified multiple distinct factors:
 
 1. IPv6 connectivity failure
