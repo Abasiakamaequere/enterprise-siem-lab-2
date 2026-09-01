@@ -69,21 +69,21 @@ Splunk Enterprise
 At the infrastructure-provisioning stage, the environment consisted primarily of the virtualized Ubuntu Server that would later host Splunk Enterprise.
 
 ```text
-                    Physical Host
-                         │
-                         │
-                    VirtualBox
-                         │
-                         ▼
-              ┌───────────────────┐
-              │   Ubuntu Server   │
-              │       VM          │
-              │                   │
-              │  2 vCPU           │
-              │  4 GB RAM         │
-              │  35 GB Disk       │
-              │  Bridged Network  │
-              └───────────────────┘
+    Physical Host
+          │
+          │
+     VirtualBox
+          │
+          ▼
+┌───────────────────┐
+│   Ubuntu Server   │
+│       VM          │
+│                   │
+│  2 vCPU           │
+│  4 GB RAM         │
+│  35 GB Disk       │
+│  Bridged Network  │
+└───────────────────┘
 ```
 
 The environment was subsequently expanded to include a Windows endpoint and Splunk Universal Forwarder.
@@ -121,6 +121,6 @@ Sysmon
 Security investigations
 Detection and threat-hunting workflows
 
-Next Stage
+### Next Stage
 
 The next stage was the installation and initial configuration of the Ubuntu Server operating system, which became the foundation for the Splunk SIEM deployment.
