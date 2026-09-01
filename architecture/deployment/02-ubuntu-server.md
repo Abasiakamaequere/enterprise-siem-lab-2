@@ -114,15 +114,15 @@ The Ubuntu Server was not treated simply as an application host.
 
 Security considerations included:
 
-## Least privilege
+### Least privilege
 
 Splunk was ultimately configured to operate using a dedicated unprivileged service account rather than unrestricted root execution.
 
-## Controlled environment
+### Controlled environment
 
 The server operates within a sandboxed VirtualBox laboratory.
 
-## Service separation
+### Service separation
 
 The Splunk service identity was separated from normal administrative privileges.
 
@@ -130,7 +130,7 @@ The detailed privilege-separation process is documented in:
 
 05-privilege-separation.md
 
-### Deployment Challenges
+## Deployment Challenges
 
 The Ubuntu Server became the point at which several infrastructure challenges became visible.
 
