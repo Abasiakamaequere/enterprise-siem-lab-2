@@ -45,13 +45,13 @@ The server therefore forms the bridge between the infrastructure layer and the S
 ┌──────────────────────────────────────┐
 │        Ubuntu Server 25.04           │
 │                                      │
-│          Splunk Enterprise            │
+│          Splunk Enterprise           │
 │                 │                    │
 │        ┌────────┴────────┐           │
 │        │                 │           │
 │        ▼                 ▼           │
 │   Splunk Web        Event Processing │
-│      :8000                         │
+│      :8000                           │
 │                         │            │
 │                         ▼            │
 │                  Security Data       │
