@@ -73,18 +73,15 @@ Rather than continuing with the extremely slow transfer inside the Ubuntu enviro
 
 The workflow was changed to:
 
+```text
 Splunk Download
-
       ↓
-Windows Host
-      
+Windows Host 
       ↓
-
 SCP
-
       ↓
 Ubuntu Server
-
+```
 This separated the external package acquisition problem from the internal laboratory transfer.
 
 ## Cross-Platform Transfer
@@ -113,6 +110,7 @@ The package transfer therefore became practical within the laboratory workflow.
 
 ## Final Network Workflow
 
+```text
 The resulting acquisition workflow was:
                  External Network
                        │
@@ -128,6 +126,7 @@ The resulting acquisition workflow was:
                        │
                        ▼
              Splunk Installation
+```
 
 ## Engineering Analysis
 
