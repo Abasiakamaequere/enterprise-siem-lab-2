@@ -176,14 +176,19 @@ Future monitoring capabilities include:
 
 ## 🚀 Project Status
 
-🟢 SIEM infrastructure — Operational
-🟢 Splunk Web — Operational
-🟢 Windows Security Event ingestion — Operational
-🟢 Authentication investigations — Operational
-🟢 SOC dashboard — Developed
-🟡 Sysmon telemetry — Under development
-🟡 Additional detections — In progress
-🟡 Automated alerting — Planned
+## 🚀 Project Status
+
+🟢 SIEM infrastructure — Operational  
+🟢 Splunk Web — Operational  
+🟢 Windows Security Event ingestion — Operational  
+🟢 Sysmon endpoint telemetry — Operational  
+🟢 Universal Forwarder telemetry pipeline — Operational  
+🟢 Authentication event monitoring — Operational  
+🟢 Process creation telemetry — Operational  
+🟢 SPL-based investigation — Operational  
+🟢 SOC dashboard — Developed  
+🟡 Additional detection use cases — In progress  
+🟡 Automated alerting and correlation — Planned
 
 ---
 
