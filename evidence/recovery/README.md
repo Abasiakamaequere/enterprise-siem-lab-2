@@ -1,55 +1,81 @@
 # Recovery Evidence
 
-This directory contains evidence supporting the troubleshooting, recovery, restoration, and post-recovery validation performed during the SIEM laboratory build.
+This directory documents evidence associated with infrastructure recovery and post-recovery validation performed during the SIEM laboratory build.
+
+The recovery process is treated as an engineering activity rather than as a simple installation step. The laboratory encountered infrastructure and package-management problems that required diagnostic and recovery procedures before normal SIEM operation could continue.
+
+---
 
 ## Recovery Scope
 
-The recovery documentation covers, where applicable:
+The documented recovery history includes:
 
-- Infrastructure failure
-- Service troubleshooting
-- Configuration recovery
-- Splunk service restoration
-- Network and port validation
-- Post-recovery operational verification
+- Virtual machine resource exhaustion
+- Virtual machine freeze
+- Emergency Mode recovery
+- Filesystem integrity checking
+- Package database recovery
+- Package-management repair
+- Restoration of Splunk operation
+- Post-recovery service validation
 
-## Recovery Evidence Chain
+---
+
+## Recovery Methodology
 
 ```text
-Failure / Fault
-      ↓
+Failure
+   ↓
 Diagnosis
-      ↓
-Remediation
-      ↓
-Service Restoration
-      ↓
-Network Validation
-      ↓
-Operational Verification
+   ↓
+Recovery Procedure
+   ↓
+System Restoration
+   ↓
+Service Validation
+   ↓
+Operational SIEM
 ````
 
-## Evidence Standard
+---
 
-Recovery evidence should demonstrate what failed, what was changed, and how successful restoration was verified.
+## Evidence Status
 
-Where screenshots are available, they should be connected to the corresponding recovery documentation.
+At the current stage of the project, no dedicated recovery screenshot is included in this directory.
 
-## Available Evidence
+The repository does not fabricate visual evidence for recovery activities that were not separately captured.
 
-Recovery evidence will be added only where an existing artifact directly demonstrates the recovery process or its validation.
+Existing deployment and infrastructure evidence may provide post-recovery validation where appropriate, but such evidence is not presented as direct proof of the recovery procedure itself.
 
-No evidence should be fabricated or presented as recovery evidence unless it actually documents an event that occurred during the laboratory build.
+---
 
-## Sanitization
+## Recovery Engineering Principle
 
-Before publication, remove or obscure:
+Infrastructure recovery should establish not only that a system is operational again, but also that the underlying failure was understood and that critical services were revalidated after restoration.
+
+The recovery documentation therefore distinguishes between:
+
+1. **Failure condition**
+2. **Diagnostic process**
+3. **Recovery action**
+4. **System restoration**
+5. **Post-recovery validation**
+
+---
+
+## Evidence Integrity
+
+Recovery evidence must represent the actual laboratory recovery process.
+
+No screenshots, logs, commands, or validation results should be fabricated or presented as evidence unless they were actually captured during the laboratory work.
+
+Sensitive information must be sanitized before publication.
+
+Do not publish:
 
 * Passwords
+* Authentication credentials
 * API keys
-* Authentication tokens
-* Private credentials
-* Personal information
-* Sensitive infrastructure information
-
-The purpose of this directory is to demonstrate practical troubleshooting and recovery capability while maintaining safe public documentation.
+* Tokens
+* Sensitive personal information
+* Unnecessary private network information
