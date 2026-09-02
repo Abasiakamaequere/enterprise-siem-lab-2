@@ -75,7 +75,7 @@ Process creation telemetry provides visibility into programs executed on the end
 ---
 
 ## 03 — Splunk Process Creation Search
-![splunk EventCode=1 search](12-splunk-eventcode1.png)
+
 ![Splunk EventCode 1 Search](12-splunk-eventcode1.png)
 
 This evidence demonstrates that process creation telemetry was successfully available within Splunk Search & Reporting.
