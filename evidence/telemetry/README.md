@@ -37,7 +37,7 @@ Splunk Search
 | `07-forwarder-outputs-conf.png`      | Shows the Forwarder's configured telemetry destination                        |
 | `08-tcp-connectivity.png`            | Validates TCP connectivity from the Windows endpoint to port 9997             |
 | `09-splunk-receiver-conf.png`        | Shows the Splunk server configured to receive forwarded telemetry             |
-| `10-splunk-telemetry-search.jpg`     | Confirms endpoint telemetry was successfully indexed and searchable in Splunk |
+| `10-splunk-telemetry-search.png`     | Confirms endpoint telemetry was successfully indexed and searchable in Splunk |
 
 ---
 
@@ -93,7 +93,7 @@ Together with the Forwarder configuration and connectivity test, this validates 
 
 ## 06 — Successful Telemetry Ingestion
 
-![Splunk Telemetry Search](10-splunk-telemetry-search.jpg)
+![Splunk Telemetry Search](10-splunk-telemetry-search.png)
 
 This evidence provides the final validation of the telemetry pipeline.
 
