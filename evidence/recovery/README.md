@@ -45,7 +45,7 @@ At the current stage of the project, no dedicated recovery screenshot is include
 
 The repository does not fabricate visual evidence for recovery activities that were not separately captured.
 
-Existing deployment and infrastructure evidence may provide post-recovery validation where appropriate, but such evidence is not presented as direct proof of the recovery procedure itself.
+Existing deployment evidence provides post-recovery validation where appropriate. For example, Splunk service status, listening ports, Splunk Web availability, and the infrastructure baseline demonstrate that the SIEM infrastructure was operational after the recovery process. These artifacts are not presented as direct visual proof of the recovery procedure itself.
 
 ---
 
