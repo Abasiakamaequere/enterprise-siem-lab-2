@@ -1,4 +1,3 @@
-[05-privilege-separation.md](https://github.com/user-attachments/files/31762549/05-privilege-separation.md)
 # 05 — Splunk Privilege Separation
 
 ## Objective
