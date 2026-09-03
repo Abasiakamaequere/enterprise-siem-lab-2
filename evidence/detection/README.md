@@ -1,18 +1,3 @@
-Perfect. ✅ **Telemetry README is updated.**
-
-Now we move to the **Detection README**.
-
-Go to:
-
-```text
-evidence
-→ detection
-→ README.md
-```
-
-Click **Edit** (pencil), delete the current contents, and replace it with:
-
-````markdown
 # Detection Evidence
 
 This directory contains visual evidence supporting the security detection and monitoring capabilities developed in the SIEM laboratory.
