@@ -63,7 +63,7 @@ Process creation telemetry provides visibility into programs executed on the end
 
 ![Splunk EventCode 1 Search](12-splunk-eventcode1.png)
 
-This evidence demonstrates that process creation telemetry was successfully available within Splunk Search & Reporting.
+This evidence demonstrates that the Sysmon Event ID 1 process-creation event generated on the Windows endpoint successfully traversed the telemetry pipeline and became searchable within Splunk Search & Reporting.
 
 The search uses:
 
