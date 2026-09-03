@@ -120,7 +120,7 @@ The laboratory was developed through multiple implementation stages rather than 
 ## SIEM
 
 * Splunk Enterprise deployment
-* Splunk Web configuration
+* Splunk Web deployment and validation
 * Splunk service validation
 * Receiving port configuration
 * Forwarder-to-indexer communication
@@ -478,14 +478,8 @@ No recovery screenshot is fabricated where a dedicated recovery artifact was not
 ├── investigations/
 │   └── Security investigation case studies
 │
-├── dashboards/
-│   └── SOC dashboards and visualizations
-│
 ├── troubleshooting/
 │   └── Engineering failures and troubleshooting
-│
-├── incident-response/
-│   └── Investigation and response methodology
 │
 ├── evidence/
 │   ├── deployment/
@@ -493,30 +487,27 @@ No recovery screenshot is fabricated where a dedicated recovery artifact was not
 │   ├── detection/
 │   └── recovery/
 │
-├── scripts/
-│   └── Reusable scripts
-│
-└── documentation/
-    └── Detailed project documentation
+├── LICENSE
+└── README.md
 ```
 
 ---
 
 # 🚦 Project Status
 
-| Capability                             | Status         |
-| -------------------------------------- | -------------- |
-| SIEM infrastructure                    | 🟢 Operational |
-| Splunk Web                             | 🟢 Operational |
-| Windows Security Event ingestion       | 🟢 Operational |
-| Sysmon endpoint telemetry              | 🟢 Operational |
-| Universal Forwarder telemetry pipeline | 🟢 Operational |
-| Authentication event monitoring        | 🟢 Operational |
-| Process creation telemetry             | 🟢 Operational |
-| SPL-based investigation                | 🟢 Operational |
-| SOC dashboard                          | 🟢 Developed   |
-| Additional detection use cases         | 🟡 In progress |
-| Automated alerting and correlation     | 🟡 Planned     |
+| Capability                                     | Status         |
+| ---------------------------------------------- | -------------- |
+| SIEM infrastructure                            | 🟢 Operational |
+| Splunk Web                                     | 🟢 Operational |
+| Windows Security Event ingestion               | 🟢 Operational |
+| Sysmon endpoint telemetry                      | 🟢 Operational |
+| Universal Forwarder telemetry pipeline         | 🟢 Operational |
+| Authentication event monitoring                | 🟢 Operational |
+| Process creation telemetry                     | 🟢 Operational |
+| SPL-based investigation                        | 🟢 Operational |
+| SOC dashboard                                  | 🟢 Developed   |
+| Additional detection use cases                 | 🟡 In progress |
+| Automated alerting and advanced correlation    | 🟡 Planned     |
 
 ---
 
