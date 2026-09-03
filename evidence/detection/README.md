@@ -20,7 +20,7 @@ Telemetry Forwarding
 Splunk Event Search
           ↓
 Detection Validation
-````
+```
 
 ---
 
