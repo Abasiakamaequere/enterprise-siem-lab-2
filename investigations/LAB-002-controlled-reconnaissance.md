@@ -90,6 +90,8 @@ The search was designed to identify process execution associated with the `whoam
 
 If the laboratory uses a dedicated Splunk index, the wildcard index should be replaced with the appropriate index.
 
+See `evidence/detection/13-whoami-detection-search.png` for the corresponding Splunk evidence.
+
 ---
 
 # 6. Process Investigation
