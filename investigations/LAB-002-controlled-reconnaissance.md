@@ -1,52 +1,262 @@
 # LAB-002 — Controlled Reconnaissance Investigation
 
-## 1. Detection
+## 1. Investigation Overview
 
-Controlled reconnaissance-style activity was observed within the isolated Windows endpoint laboratory.
+This investigation documents a controlled reconnaissance-style activity executed against the Windows endpoint in the isolated security laboratory.
 
-The activity was investigated using the endpoint telemetry available through the Splunk SIEM.
+The activity was generated using **Atomic Red Team** to simulate adversary behavior and was monitored through the existing endpoint telemetry pipeline.
 
-## 2. Evidence
+The investigation demonstrated that activity generated on the Windows endpoint could be captured by Sysmon, forwarded through the Splunk Universal Forwarder, and searched within Splunk Enterprise.
 
-The investigation is based on endpoint telemetry collected through:
+The investigation flow was:
 
-- Windows Event Logs
-- Sysmon
-- Splunk Universal Forwarder
-- Splunk Enterprise
+```text
+Atomic Red Team Test
+        ↓
+Windows Endpoint
+        ↓
+Sysmon Process Telemetry
+        ↓
+Splunk Universal Forwarder
+        ↓
+Splunk Enterprise
+        ↓
+SPL Investigation
+        ↓
+Security Assessment
+````
 
-The telemetry pipeline allowed endpoint activity to be searched centrally within Splunk.
+---
 
-## 3. Analysis
+# 2. Objective
 
-The observed activity was examined as potential reconnaissance behavior.
+The objective was to validate that the laboratory could detect and investigate controlled reconnaissance-style activity rather than relying only on manually generated benign events.
 
-The investigation focused on identifying observable endpoint activity and determining whether the available telemetry provided sufficient context to understand the behavior.
+The test focused on **MITRE ATT&CK T1033 — System Owner/User Discovery**.
 
-The analysis followed:
+The activity was intentionally executed within the isolated Windows laboratory environment.
 
-**Endpoint Activity → Telemetry → Splunk Search → Security Assessment**
+---
 
-## 4. Context
+# 3. Test Activity
 
-The activity occurred within the controlled and isolated laboratory environment.
+Atomic Red Team was installed on the Windows endpoint and used to execute the T1033 discovery test.
 
-The reconnaissance behavior was intentionally investigated as part of the security-monitoring exercise.
+The test was designed to perform user discovery using normal Windows functionality.
 
-It should therefore not be interpreted as evidence of a real-world compromise.
+The activity generated process execution telemetry that could subsequently be investigated through Splunk.
 
-## 5. Assessment
+The test was controlled and non-destructive.
 
-The investigation demonstrates that endpoint telemetry can be used to identify and analyze reconnaissance-style activity.
+---
 
-However, identifying reconnaissance behavior alone does not establish malicious intent.
+# 4. Detection Source
 
-Additional context, event correlation, process information, network telemetry, and timeline analysis would be required for a production investigation.
+The primary telemetry source used during the investigation was:
 
-## 6. Conclusion
+```text
+Sysmon Process Creation
+Event ID: 1
+```
 
-LAB-002 demonstrates the investigation of controlled reconnaissance-style activity using centralized endpoint telemetry.
+The relevant telemetry was transported through:
 
-The case demonstrates the progression from observable endpoint behavior to SIEM-based analysis and security assessment.
+```text
+Windows Endpoint
+        ↓
+Sysmon
+        ↓
+Universal Forwarder
+        ↓
+Splunk Enterprise
+```
 
-This investigation also highlights the importance of combining multiple telemetry sources when evaluating potentially suspicious activity.
+This allowed the Atomic Red Team activity to become searchable security telemetry within Splunk.
+
+---
+
+# 5. Splunk Investigation
+
+The investigation searched for Sysmon process creation events associated with the discovery activity.
+
+The search used the following logic:
+
+```spl
+index=* EventCode=1
+(Image="*\\whoami.exe" OR CommandLine="*whoami*")
+```
+
+The search was designed to identify process execution associated with the `whoami` command.
+
+If the laboratory uses a dedicated Splunk index, the wildcard index should be replaced with the appropriate index.
+
+---
+
+# 6. Process Investigation
+
+The process telemetry provided additional context about the execution.
+
+Relevant fields included:
+
+```text
+Image
+CommandLine
+ParentImage
+User
+Host
+Timestamp
+```
+
+The investigation was particularly interested in the parent-child process relationship.
+
+The observed execution chain demonstrated that the discovery command was executed through the Windows command interpreter and was associated with PowerShell activity.
+
+The resulting process relationship provided additional context beyond simply observing that a discovery command had been executed.
+
+---
+
+# 7. Telemetry Validation
+
+The investigation validated the complete telemetry path:
+
+```text
+Atomic Red Team
+       ↓
+T1033 Execution
+       ↓
+Windows Process Creation
+       ↓
+Sysmon Event ID 1
+       ↓
+Universal Forwarder
+       ↓
+Splunk Enterprise
+       ↓
+Searchable Event
+```
+
+This confirmed that the laboratory was capable of capturing activity generated by a controlled adversary-emulation test.
+
+---
+
+# 8. Investigation Logic
+
+The investigation followed a simple analyst workflow:
+
+```text
+Controlled Test
+      ↓
+Identify Technique
+      ↓
+Identify Process Activity
+      ↓
+Search Splunk
+      ↓
+Inspect Process Fields
+      ↓
+Review Parent-Child Relationship
+      ↓
+Assess Telemetry
+```
+
+The investigation did not treat the presence of the event alone as proof of compromise.
+
+Instead, the activity was evaluated in the context of the controlled laboratory exercise.
+
+---
+
+# 9. MITRE ATT&CK Context
+
+The test was associated with:
+
+```text
+T1033 — System Owner/User Discovery
+```
+
+The purpose of the test was to simulate discovery activity and determine whether the resulting endpoint behavior was visible to the SIEM.
+
+The ATT&CK technique describes the behavior being simulated; it does not mean that the laboratory endpoint was compromised.
+
+---
+
+# 10. Security Assessment
+
+The investigation demonstrated that controlled reconnaissance-style activity generated observable endpoint telemetry.
+
+The laboratory successfully provided visibility from:
+
+```text
+Adversary Emulation
+        ↓
+Process Execution
+        ↓
+Sysmon Telemetry
+        ↓
+Centralized SIEM
+        ↓
+Investigation
+```
+
+The available process telemetry provided useful context for understanding the activity, including the executable and parent process involved.
+
+However, the presence of a discovery command alone is not sufficient to establish malicious intent.
+
+In a production environment, the analyst would correlate the activity with:
+
+* User context
+* Authentication events
+* Process ancestry
+* Command-line arguments
+* Execution path
+* Network activity
+* Host role
+* Timeline
+* Other endpoint telemetry
+
+---
+
+# 11. Limitations
+
+This investigation was conducted in a controlled laboratory environment.
+
+The test does not represent a real-world compromise.
+
+The investigation was also limited by the telemetry and detection logic currently implemented in the laboratory.
+
+A production detection could be strengthened through:
+
+* Additional Sysmon telemetry
+* Behavioral detection logic
+* Process baselines
+* User and asset context
+* Network correlation
+* Risk scoring
+* MITRE ATT&CK mapping
+* Automated alerting
+* False-positive suppression
+
+---
+
+# 12. Conclusion
+
+LAB-002 demonstrates the transition from passive telemetry collection to active security validation.
+
+A controlled reconnaissance technique was executed using Atomic Red Team, captured by Sysmon, forwarded through the Splunk Universal Forwarder, and investigated within Splunk Enterprise.
+
+The investigation demonstrates that the laboratory can:
+
+```text
+Generate
+   ↓
+Capture
+   ↓
+Forward
+   ↓
+Search
+   ↓
+Investigate
+   ↓
+Assess
+```
+
+This establishes the foundation for more advanced detection engineering using controlled adversary emulation and multi-source telemetry correlation.
