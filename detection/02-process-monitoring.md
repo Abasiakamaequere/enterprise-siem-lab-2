@@ -161,6 +161,8 @@ Returned by SPL search
 
 This is stronger validation than simply demonstrating that Sysmon or the Forwarder service is running.
 
+The corresponding validation evidence is maintained in: `evidence/detection/13-whoami-detection-search.png`
+
 ---
 
 # Process Analysis
