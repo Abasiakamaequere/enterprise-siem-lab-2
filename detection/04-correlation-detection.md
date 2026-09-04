@@ -511,12 +511,3 @@ See:
 ```text
 05-investigation-Case.md
 ```
-
-````
-
-### One important repository point
-
-Your actual filename is:
-
-```text
-05-investigation-Case.md
