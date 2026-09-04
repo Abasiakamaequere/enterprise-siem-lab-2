@@ -46,12 +46,3 @@ Additional contextual analysis would be required before classifying the activity
 LAB-001 demonstrates the use of Windows Security Event ID 4625 as an investigation starting point within the SIEM laboratory.
 
 The case connects endpoint authentication telemetry with SIEM-based investigation and demonstrates how authentication events can be used for security monitoring and further analysis.
-```
-
-### Important
-
-This case **does not invent an attacker, IP address, username, timestamp, password attack, or malicious conclusion**. It only documents what your existing project material supports.
-
-Then **Commit changes**.
-
-When you've done that, tell me **“LAB-001 done”** and I'll give you the **next single step**.
