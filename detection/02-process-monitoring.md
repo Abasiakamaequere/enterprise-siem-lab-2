@@ -2,11 +2,13 @@
 
 ## Objective
 
-The objective of this detection is to monitor process execution activity generated on the Windows endpoint.
+The objective of this detection is to monitor process execution activity generated on the Windows endpoint and identify process activity that may be security-relevant.
 
 Process execution is a fundamental source of endpoint security telemetry because malicious activity frequently involves the execution of processes, scripts, interpreters, or administrative utilities.
 
 Sysmon provides enhanced process telemetry that can be collected by the Splunk Universal Forwarder and analyzed within Splunk Enterprise.
+
+The laboratory progressed from basic process-event visibility to controlled validation using Atomic Red Team activity.
 
 ---
 
@@ -18,15 +20,15 @@ The primary telemetry source for this detection is:
 Sysmon
 ````
 
-Sysmon Process Create events are commonly associated with:
+Sysmon Process Create events are associated with:
 
 ```text
 Event ID 1
 ```
 
-This event can provide information about process execution and associated context.
+These events can provide information about process execution and associated context.
 
-The available fields can include information such as:
+Available fields can include:
 
 * Process name
 * Process path
@@ -51,7 +53,113 @@ index=* EventCode=1
 
 This provides a starting point for examining process execution telemetry.
 
-The search should be refined to the actual index and field structure used by the laboratory once those values have been established.
+The search was subsequently validated against controlled endpoint activity to confirm that Sysmon process events were successfully reaching Splunk.
+
+---
+
+# Telemetry Validation
+
+Process monitoring required validation beyond confirming that Sysmon was installed and running.
+
+The laboratory initially generated controlled process activity on the Windows endpoint and attempted to locate the resulting telemetry in Splunk.
+
+The initial search did not return the expected process-creation event.
+
+Further analysis of the available telemetry sources identified that the expected Sysmon data was not initially present in the Splunk search results.
+
+This demonstrated an important distinction between:
+
+```text
+Sysmon running
+       ≠
+Sysmon telemetry successfully indexed
+```
+
+The telemetry pipeline was subsequently investigated and the endpoint forwarding configuration was corrected.
+
+After remediation, Sysmon process creation events became searchable in Splunk using:
+
+```spl
+EventCode=1
+```
+
+This established the complete process-telemetry path:
+
+```text
+Windows Process Activity
+        ↓
+Sysmon Event ID 1
+        ↓
+Universal Forwarder
+        ↓
+TCP 9997
+        ↓
+Splunk Enterprise
+        ↓
+EventCode=1 Search
+```
+
+The corresponding validation evidence is maintained in:
+
+```text
+evidence/detection/
+```
+
+---
+
+# Controlled Process Execution Testing
+
+Controlled endpoint activity was used to validate process monitoring.
+
+The laboratory used Atomic Red Team to generate a controlled reconnaissance-style activity on the Windows endpoint.
+
+The activity associated with:
+
+```text
+T1033 — System Owner/User Discovery
+```
+
+was executed in the isolated laboratory environment.
+
+The test resulted in execution of:
+
+```text
+whoami.exe
+```
+
+The purpose of the test was not to simulate an uncontrolled attack, but to generate a known security-relevant process event that could be traced through the telemetry pipeline.
+
+---
+
+# Process Creation Validation in Splunk
+
+After the telemetry pipeline was corrected, the controlled `whoami.exe` execution became visible within Splunk.
+
+The process-creation search used:
+
+```spl
+EventCode=1
+```
+
+The resulting event provided process execution context that could be examined within Splunk Search & Reporting.
+
+This established that the process generated on the Windows endpoint successfully:
+
+```text
+Generated
+   ↓
+Captured by Sysmon
+   ↓
+Forwarded by Universal Forwarder
+   ↓
+Received by Splunk
+   ↓
+Indexed
+   ↓
+Returned by SPL search
+```
+
+This is stronger validation than simply demonstrating that Sysmon or the Forwarder service is running.
 
 ---
 
@@ -85,7 +193,7 @@ This approach helps distinguish normal administrative activity from potentially 
 
 Command-line information can provide valuable investigative context.
 
-For example, an analyst may search for process events containing command-line data:
+For example:
 
 ```spl
 index=* EventCode=1
@@ -110,15 +218,9 @@ Parent Process
 Child Process
 ```
 
-For example:
+During the controlled process-execution test, the resulting Sysmon event provided parent and child process context.
 
-```text
-explorer.exe
-      ↓
-cmd.exe
-      ↓
-command.exe
-```
+This allows the analyst to investigate not only what executed, but also which process initiated the execution.
 
 The existence of a particular parent-child relationship does not automatically indicate malicious behavior.
 
@@ -217,27 +319,51 @@ The correlation provides the investigative context.
 
 ---
 
-# Detection Workflow
+# Detection Validation
 
-The process-monitoring workflow is:
+The controlled process-execution test demonstrated the complete progression from endpoint activity to SIEM-visible telemetry.
 
 ```text
-Process Execution
-       ↓
-Sysmon Event
-       ↓
-Windows Event Log
-       ↓
+Controlled Activity
+        ↓
+Sysmon Event ID 1
+        ↓
 Universal Forwarder
-       ↓
-Splunk Enterprise
-       ↓
-SPL Search
-       ↓
-Process Analysis
-       ↓
-Contextual Investigation
+        ↓
+Splunk Ingestion
+        ↓
+EventCode=1
+        ↓
+Search Result
+        ↓
+Detection Validation
 ```
+
+This validation is important because it demonstrates that the detection logic is operating on actual telemetry generated within the laboratory rather than on assumed or manually constructed data.
+
+---
+
+# Automated Detection
+
+The validated process telemetry was subsequently used as the basis for an automated Splunk detection.
+
+A Splunk alert was created around the controlled reconnaissance-related process activity.
+
+The alert was tested against the laboratory-generated event to verify that the detection could identify the expected activity.
+
+This represents a progression from:
+
+```text
+Manual Search
+      ↓
+Validated Telemetry
+      ↓
+Detection Logic
+      ↓
+Automated Alert
+```
+
+The alerting workflow provides the foundation for moving from analyst-driven searches toward continuous SOC monitoring.
 
 ---
 
@@ -321,25 +447,29 @@ A production detection would require additional logic such as:
 * Allowlisting
 * False-positive suppression
 
-The laboratory can progressively introduce these controls.
+The controlled `whoami.exe` detection demonstrates detection validation, but execution of `whoami.exe` by itself is not proof of malicious activity.
+
+Context and correlation are required before making a security determination.
 
 ---
 
 # MITRE ATT&CK Context
 
-Process execution telemetry can support investigations related to multiple ATT&CK techniques depending on the behavior observed.
+The controlled reconnaissance activity used during validation was associated with:
 
-The event itself should not automatically be mapped to a technique.
+```text
+T1033 — System Owner/User Discovery
+```
 
-ATT&CK mapping should be based on the complete behavior and detection logic.
+The technique mapping describes the **behavior being tested**, not the mere existence of a Sysmon Event ID 1 event.
 
-For example, suspicious execution of command interpreters, scripting engines, or other utilities may support technique-specific investigations when the surrounding evidence justifies the mapping.
+This distinction is important because a generic process-creation event can support many different investigations depending on the executable, command line, parent process, user, and surrounding activity.
 
 ---
 
 # Result
 
-The laboratory now supports process-execution monitoring in addition to authentication monitoring.
+The laboratory now supports process-execution monitoring with validated endpoint-to-SIEM telemetry and automated detection capability.
 
 The detection capability has expanded from:
 
@@ -353,20 +483,23 @@ to:
 Authentication
         +
 Process Execution
+        +
+Controlled Detection Validation
+        +
+Automated Alerting
 ```
 
-This provides additional endpoint context for threat hunting and investigation.
+The process-monitoring workflow therefore demonstrates both telemetry validation and detection engineering.
 
 ---
 
 # Next Stage
 
-The next detection will extend visibility into **network activity generated by the Windows endpoint**.
+The next detection extends visibility into **network activity generated by the Windows endpoint**.
 
-This will allow process activity to be examined alongside outbound connections and provide another dimension for correlation.
+This allows process activity to be examined alongside outbound connections and provides another dimension for correlation and investigation.
 
 See:
 
 ```text
 03-network-monitoring.md
-```
