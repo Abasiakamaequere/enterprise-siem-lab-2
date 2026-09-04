@@ -86,7 +86,7 @@ This evidence demonstrates the targeted detection search used to validate the At
 index=* EventCode=1 (Image="*\\whoami.exe" OR CommandLine="*whoami*")
 ```
 
-The returned events confirm a linked parent-child process chain — the `whoami.exe` process-creation event's `ParentProcessGuid` matches the `ProcessGuid` of the `cmd.exe` event that spawned it — providing evidence-level confirmation of the execution chain rather than relying on Image/CommandLine string matching alone.
+The expanded event shows Splunk natively extracting `ParentImage` (`cmd.exe`) and `ParentCommandLine` (`cmd.exe /C whoami`) directly on the `whoami.exe` process-creation event — confirming the execution chain without requiring manual correlation across separate raw events.
 
 ---
 
