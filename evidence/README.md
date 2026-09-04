@@ -11,7 +11,7 @@ Telemetry
     ↓
 Detection
     ↓
-Investigation
+Troubleshooting
     ↓
 Recovery
 ````
