@@ -40,7 +40,7 @@ The activity was intentionally executed within the isolated Windows laboratory e
 
 # 3. Test Activity
 
-Atomic Red Team was installed on the Windows endpoint and used to execute the T1033 discovery test.
+Atomic Red Team was installed on the Windows endpoint and used to execute the T1033 discovery test. Installing Atomic Red Team on the endpoint required resolving several installation and network-transport issues before the framework could run; see `troubleshooting/08-atomic-red-team-installation.md` for the detailed recovery process.
 
 The test was designed to perform user discovery using normal Windows functionality.
 
