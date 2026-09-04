@@ -509,5 +509,5 @@ Recommended Response
 See:
 
 ```text
-05-investigation-Case.md
+05-investigation-case.md
 ```
