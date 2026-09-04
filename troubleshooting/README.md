@@ -13,5 +13,6 @@ This directory documents technical failures encountered during the laboratory bu
 * Package database recovery
 * Splunk root-execution restriction
 * Endpoint telemetry gaps
+* Atomic Red Team installation and adversary-emulation tooling
 
 The purpose of documenting these failures is to demonstrate the engineering process rather than only the final successful configuration.
