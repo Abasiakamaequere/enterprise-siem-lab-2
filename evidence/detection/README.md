@@ -76,6 +76,20 @@ This connects the endpoint-side Sysmon process creation event with the SIEM-side
 
 ---
 
+## 04 — Controlled Discovery Detection (T1033)
+
+![Whoami Detection Search](13-whoami-detection-search.png)
+
+This evidence demonstrates the targeted detection search used to validate the Atomic Red Team T1033 test documented in `investigations/LAB-002-controlled-reconnaissance.md`:
+
+```text
+index=* EventCode=1 (Image="*\\whoami.exe" OR CommandLine="*whoami*")
+```
+
+The returned events confirm a linked parent-child process chain — the `whoami.exe` process-creation event's `ParentProcessGuid` matches the `ProcessGuid` of the `cmd.exe` event that spawned it — providing evidence-level confirmation of the execution chain rather than relying on Image/CommandLine string matching alone.
+
+---
+
 ## Detection Engineering Principle
 
 The detection evidence is structured around observable security activity rather than isolated screenshots.
