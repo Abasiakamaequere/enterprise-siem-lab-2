@@ -10,9 +10,9 @@ Correlation allows the analyst to examine relationships between:
 
 - Authentication activity
 - Process execution
-- Network connections
+- Network activity
 
-The purpose of this detection is therefore not to classify a single event as malicious, but to identify combinations of activity that present a stronger investigative signal.
+The purpose of this detection is not to classify a single event as malicious, but to identify combinations of activity that provide a stronger investigative signal.
 
 ---
 
@@ -44,7 +44,7 @@ A single process execution may be normal.
 
 A single network connection may also be normal.
 
-However, the combination of multiple events occurring within a short period may provide additional context.
+However, multiple events occurring within a related timeframe can provide additional investigative context.
 
 For example:
 
@@ -58,49 +58,9 @@ New Process Execution
 Network Connection
 ```
 
-This sequence would justify further investigation because multiple telemetry sources are associated with the same period of endpoint activity.
+Such a sequence may justify further investigation because multiple telemetry sources are associated with the same period of endpoint activity.
 
 The sequence itself does not automatically prove compromise.
-
----
-
-# Correlation Model
-
-The investigation model is:
-
-```text
-┌──────────────────────┐
-│ Authentication      │
-│                      │
-│ 4624 / 4625          │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Process Execution    │
-│                      │
-│ Sysmon Event 1       │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Network Activity     │
-│                      │
-│ Sysmon Event 3       │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Correlation          │
-│                      │
-│ Time + Host + User   │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Analyst Investigation │
-└──────────────────────┘
-```
 
 ---
 
@@ -118,7 +78,7 @@ User
 Timestamp
 ```
 
-Additional attributes can include:
+Additional attributes may include:
 
 ```text
 Process
@@ -134,9 +94,9 @@ The more contextual information available, the stronger the investigation can be
 
 ---
 
-# Authentication Baseline
+# Authentication Context
 
-Authentication activity provides the starting point.
+Authentication activity provides an important starting point for correlation.
 
 Successful authentication:
 
@@ -150,13 +110,15 @@ Failed authentication:
 index=* EventCode=4625
 ```
 
-These searches establish the authentication activity occurring on the endpoint.
+These searches establish authentication activity occurring on the monitored endpoint.
+
+Authentication events can then be used as investigative pivots into process and network activity.
 
 ---
 
-# Process Baseline
+# Process Context
 
-Process execution can then be examined using Sysmon Process Create events.
+Process execution can be examined using Sysmon Process Create events.
 
 ```spl
 index=* EventCode=1
@@ -169,13 +131,15 @@ index=* EventCode=1
 | table _time host user Image ParentImage CommandLine
 ```
 
-This provides process context that can be compared against authentication events.
+This provides process context that can be compared with authentication activity.
+
+The laboratory successfully validated Sysmon Event ID 1 telemetry within Splunk, establishing process execution as a usable correlation source.
 
 ---
 
-# Network Baseline
+# Network Context
 
-Network connections can be examined using Sysmon network events.
+Network connections can be examined using Sysmon network events where the relevant telemetry is available.
 
 ```spl
 index=* EventCode=3
@@ -188,19 +152,20 @@ index=* EventCode=3
 | table _time host user Image SourceIp SourcePort DestinationIp DestinationPort
 ```
 
-This provides network context for the endpoint activity.
+The exact field names and event availability should be validated against the telemetry actually ingested by the environment.
+
+Network activity is therefore treated as an additional correlation dimension rather than assumed evidence of malicious behavior.
 
 ---
 
 # Time-Based Correlation
 
-The timestamp is an important correlation dimension.
+Timestamp is an important correlation dimension.
 
 An investigation can examine events occurring within the same period:
 
 ```text
 Authentication
-      │
       │
       ├── Process Creation
       │
@@ -238,7 +203,7 @@ The close temporal relationship does not automatically indicate malicious activi
 7. Determine whether the combined behavior is expected
 ```
 
-This approach allows the analyst to move from an isolated alert to a broader behavioral investigation.
+This approach allows the analyst to move from an isolated event toward a broader behavioral investigation.
 
 ---
 
@@ -250,19 +215,19 @@ A broad search can begin with authentication events:
 index=* EventCode=4625
 ```
 
-The analyst can then identify the relevant:
+The analyst can identify the relevant:
 
 * Host
 * User
 * Timestamp
 
-The resulting context can be used to investigate nearby process events:
+The resulting context can then be used to pivot into nearby process events:
 
 ```spl
 index=* EventCode=1
 ```
 
-and network events:
+and, where available, network events:
 
 ```spl
 index=* EventCode=3
@@ -300,45 +265,33 @@ This pivot-based methodology reflects a practical SOC investigation workflow.
 
 ---
 
-# Example Behavioral Scenario
+# Controlled Investigation Context
 
-Consider the following hypothetical sequence:
+The laboratory also contains a controlled reconnaissance investigation.
+
+The documented workflow demonstrates how endpoint telemetry can be used to move from observed process activity toward security analysis.
+
+The controlled activity involved process execution that was investigated through the SIEM and associated with:
 
 ```text
-Multiple failed authentication attempts
-                ↓
-Successful authentication
-                ↓
-Previously uncommon process executes
-                ↓
-Process establishes a network connection
+T1033 — System Owner/User Discovery
 ```
 
-An analyst would not immediately classify this as confirmed malicious activity.
+This demonstrates the transition from:
 
-Instead, the analyst would investigate:
+```text
+Raw Telemetry
+      ↓
+Observable Behavior
+      ↓
+Detection
+      ↓
+Investigation
+      ↓
+ATT&CK Context
+```
 
-### Authentication
-
-* Which account was targeted?
-* Where did the attempts originate?
-* How many failures occurred?
-* Was the successful authentication expected?
-
-### Process
-
-* What process executed?
-* Which user launched it?
-* What was the parent process?
-* What command line was used?
-* Where was the executable located?
-
-### Network
-
-* Which process initiated the connection?
-* What destination was contacted?
-* Which port was used?
-* Was the destination expected?
+The ATT&CK mapping applies to the observed behavior and investigation context rather than to the existence of a generic process event alone.
 
 ---
 
@@ -396,7 +349,7 @@ Network Connection
 
 This may be completely legitimate.
 
-Therefore, the analyst must consider:
+Therefore, the analyst should consider:
 
 * User expectations
 * Host role
@@ -435,9 +388,21 @@ Correlation does not represent a single ATT&CK technique.
 
 The relevant ATT&CK mapping depends on the behavior observed in the correlated events.
 
-For example, authentication anomalies, suspicious process execution, and network behavior may contribute evidence to investigations involving different techniques.
+The controlled reconnaissance investigation documented in the project provides an example of this principle:
 
-ATT&CK mapping should therefore be performed after analyzing the complete behavioral sequence.
+```text
+Observed Behavior
+      ↓
+Process Telemetry
+      ↓
+Investigation
+      ↓
+Behavioral Assessment
+      ↓
+T1033 — System Owner/User Discovery
+```
+
+The technique mapping should be based on the complete behavioral evidence rather than on a generic event type.
 
 ---
 
@@ -473,7 +438,7 @@ This is the foundation of behavioral security analysis.
 
 # Result
 
-The detection framework now combines three telemetry categories:
+The detection framework combines three telemetry categories:
 
 ```text
 Authentication
@@ -483,7 +448,7 @@ Process Execution
 Network Activity
 ```
 
-These signals can be correlated using:
+These signals can be related using:
 
 ```text
 Host
@@ -497,13 +462,13 @@ Process
 Network Context
 ```
 
-This provides a foundation for identifying suspicious endpoint behavior and conducting structured investigations.
+This provides a structured foundation for identifying suspicious endpoint behavior and conducting security investigations.
 
 ---
 
 # Detection Progression
 
-The detection section has now progressed through:
+The detection section has progressed through:
 
 ```text
 01 — Authentication Monitoring
@@ -521,9 +486,9 @@ This progression demonstrates the evolution from individual event monitoring to 
 
 # Next Stage
 
-The next stage will document a complete **investigation case**.
+The next stage documents a complete investigation case.
 
-Rather than describing detection concepts only, the case study will demonstrate how an analyst can move from an observed event through:
+The investigation phase demonstrates how an analyst can move from an observed security event through:
 
 ```text
 Alert
@@ -544,5 +509,14 @@ Recommended Response
 See:
 
 ```text
-05-investigation-case.md
+05-investigation-Case.md
 ```
+
+````
+
+### One important repository point
+
+Your actual filename is:
+
+```text
+05-investigation-Case.md
