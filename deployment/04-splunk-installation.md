@@ -232,4 +232,4 @@ Related Documentation
 * 02-ubuntu-server.md — Ubuntu Server deployment
 * 03-networking.md — Network troubleshooting and package transfer
 * 05-privilege-separation.md — Splunk least-privilege configuration
-* troubleshooting/filesystem-recovery.md — Detailed recovery procedure
+* troubleshooting/04-filesystem-recovery.md. — Detailed recovery procedure
