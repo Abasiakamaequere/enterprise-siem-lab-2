@@ -431,14 +431,11 @@ detection/
 │
 ├── README.md
 │
-├── 01-detection-strategy.md
-├── 02-authentication-detections.md
-├── 03-process-detections.md
-├── 04-network-detections.md
-├── 05-reconnaissance-detections.md
-├── 06-suspicious-activity.md
-├── 07-detection-validation.md
-└── 08-detection-limitations.md
+├── 01-authentication-monitoring.md
+├── 02-process-monitoring.md
+├── 03-network-monitoring.md
+├── 04-correlation-detection.md
+└── 05-investigation-case.md
 ```
 
 ---
