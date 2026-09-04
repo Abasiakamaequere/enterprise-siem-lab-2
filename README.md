@@ -507,7 +507,7 @@ No recovery screenshot is fabricated where a dedicated recovery artifact was not
 | SPL-based investigation                        | 🟢 Operational |
 | SOC dashboard                                  | 🟢 Developed   |
 | Additional detection use cases                 | 🟡 In progress |
-| Automated alerting and advanced correlation    | 🟡 Planned     |
+| Automated alerting and advanced correlation    | 🟢 Operational |
 
 ---
 
