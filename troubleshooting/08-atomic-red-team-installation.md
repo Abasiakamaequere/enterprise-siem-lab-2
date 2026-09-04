@@ -8,8 +8,26 @@ The installation did not complete in a single step. It required working through 
 
 ## Symptoms
 
-* The documented Red Canary installation script returned `404 Not Found`.
-* After installing the core framework through the PowerShell Gallery, `Test-Path C:\AtomicRedTeam\atomics` returned `False` — the framework installed, but the test-definition content did not.
+* An initial attempt to fetch and run the installation script returned content that PowerShell's parser rejected outright, referencing JavaScript-style syntax rather than anything from a `.ps1` file:
+
+```text
+  Missing closing ')' in expression.
+  At line:20 char:19
+  +         .then(result => {
+  +                   ~
+  Missing closing '}' in statement block or type definition.
+  Not all parse errors were reported.
+  ...
+  + CategoryInfo          : ParserError: (:) [Invoke-Expression], ParseException
+  + FullyQualifiedErrorId : ReservedKeywordNotAllowed,Microsoft.PowerShell.Commands.InvokeExpressionCommand
+```
+
+  The error references line 20+ of the fetched content, not the one-line command that was typed — meaning the *content IEX received* spanned dozens of lines and looked like JS, not PowerShell. That's consistent with the request landing on something other than the intended raw script (a redirect or interstitial page) rather than the actual `.ps1` file.
+
+* A retry against the same URL returned a clean `IWR : 404: Not Found` — the plain, bare response `raw.githubusercontent.com` normally gives for a missing path, and notably different in character from the JS-flavored content above.
+
+* After installing the framework via the PowerShell Gallery, calling `Invoke-AtomicTest T1033 -TestNumbers 1` before the atomics folder existed produced a specific cascading failure (see below). A direct `Test-Path C:\AtomicRedTeam\atomics` check confirmed the folder was simply absent (`False`).
+
 * The automated atomics-folder installer failed or hung repeatedly:
 
 ```text
@@ -21,17 +39,17 @@ The installation did not complete in a single step. It required working through 
 ```text
   "End of Central Directory record could not be found."
 ```
-* Switching to `curl.exe` for the same large download failed with a distinct transport error, stalling after a few hundred KB of a ~160 MB file:
+* `curl.exe` on the same large download failed with a distinct transport error, stalling after ~292 KB of a ~160 MB file:
 
 ```text
   curl: (56) schannel: server closed abruptly (missing close_notify)
 ```
-* A later `curl` attempt against a single small file failed on certificate-revocation checking:
+* A scoped `curl` request for a single small file failed on certificate-revocation checking:
 
 ```text
   curl: (35) schannel: next InitializeSecurityContext failed: CRYPT_E_REVOCATION_OFFLINE
 ```
-* After the required files were finally in place, `Import-Module` failed in a new PowerShell window:
+* After the required files were in place, `Import-Module` failed in a new PowerShell window:
 
 ```text
   File ...powershell-yaml.psm1 cannot be loaded because running scripts is disabled on this system.
@@ -39,9 +57,13 @@ The installation did not complete in a single step. It required working through 
 
 ## Diagnosis & Resolution
 
-### 1. Installation source drift
+### 1. Installation source path
 
-The install script referenced by the standard Atomic Red Team documentation (`install-atomicredteam.ps1`, fetched from the repository's default branch) no longer resolved. This was treated as a documentation/source-stability problem rather than a local configuration error, since the URL itself returned `404`.
+The install command that actually ran referenced `install-automicredteam.ps1`, not `install-atomicredteam.ps1` — a transposed letter in "atomic." Two separate failures followed from this:
+
+The first attempt returned content that PowerShell tried to execute as a script and couldn't parse — the error trace pointed into line 20+ of the fetched content itself, referencing JavaScript patterns (`.then(result => {`, `redirect(...)`). This is not typical `raw.githubusercontent.com` 404 behavior; it's more consistent with the request being intercepted before reaching GitHub — a network-level redirect, captive portal, or filtering proxy serving an interstitial page instead of the raw file. `IEX` (`Invoke-Expression`) executes whatever text it receives, so if the fetch doesn't return the expected script, this parser-error signature is the result.
+
+A retry against the same URL then returned a clean `404: Not Found` — the expected response for a path that genuinely doesn't exist on the repository, which lines up with the filename typo rather than a path that moved.
 
 **Resolution:** installed the framework through the PowerShell Gallery instead:
 
@@ -49,14 +71,31 @@ The install script referenced by the standard Atomic Red Team documentation (`in
 Install-Module -Name invoke-atomicredteam,powershell-yaml -Scope CurrentUser -Force
 ```
 
+**Worth verifying:** if `install-atomicredteam.ps1` (correct spelling) resolves cleanly today, the original failure was the typo, not link rot — worth updating this note either way once confirmed.
+
 ### 2. Framework vs. test-content separation
 
-Atomic Red Team ships as two separate install artifacts: the `invoke-atomicredteam` execution framework, and the `atomics` folder containing the actual technique test definitions. Installing the module alone was not sufficient.
+Atomic Red Team ships as two separate install artifacts: the `invoke-atomicredteam` execution framework and the `atomics` folder of test definitions. After the framework installed cleanly via the PowerShell Gallery and `Import-Module` succeeded without error, calling the test directly before the atomics folder existed produced a cascading failure:
 
-```powershell
-Test-Path C:\AtomicRedTeam            # True  — framework present
-Test-Path C:\AtomicRedTeam\atomics    # False — test content missing
+```text
+Resolve-Path : Cannot find path 'C:\AtomicRedTeam\atomics' because it does not exist.
+At C:\AtomicRedTeam\invoke-atomicredteam\Public\Invoke-AtomicTest.ps1:139 char:33
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.ResolvePathCommand
+
+PathToAtomicsFolder =
+
+Join-Path : Cannot bind argument to parameter 'Path' because it is an empty string.
+At C:\AtomicRedTeam\invoke-atomicredteam\Public\Invoke-AtomicTest.ps1:355 char:37
+    + FullyQualifiedErrorId : ParameterArgumentValidationErrorEmptyStringNotAllowed,Microsoft.PowerShell.Commands.JoinPathCommand
+
+Test-Path : Cannot bind argument to parameter 'Path' because it is null.
+At C:\AtomicRedTeam\invoke-atomicredteam\Public\Invoke-AtomicTest.ps1:356 char:33
+    + FullyQualifiedErrorId : ParameterArgumentValidationErrorNullNotAllowed,Microsoft.PowerShell.Commands.TestPathCommand
+
+Found 0 atomic tests applicable to windows platform for Technique
 ```
+
+An empty `$PathToAtomicsFolder` cascades through three cmdlet errors that look unrelated to each other before the module gives up with a plain-English summary on the last line — that last line is the one worth searching for if this recurs; the three above it are noise from the same root cause.
 
 **Resolution:** installed the atomics folder as a separate step:
 
