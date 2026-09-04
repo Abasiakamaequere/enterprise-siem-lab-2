@@ -31,6 +31,7 @@ Detection Validation
 | `11-auth-events.png`       | Demonstrates Windows authentication activity, including successful and failed logon events |
 | `12-process-creation.png`  | Demonstrates Sysmon Event ID 1 process creation activity on the Windows endpoint           |
 | `12-splunk-eventcode1.png` | Confirms process creation telemetry is searchable in Splunk using EventCode 1              |
+| `13-whoami-detection-search.png` | Confirms the Atomic Red Team T1033 (`whoami`) discovery test is searchable in Splunk via a targeted process-creation query, with parent-child process linkage intact |
 
 ---
 
