@@ -337,5 +337,5 @@ This will demonstrate that endpoint events were not merely configured to be forw
 See:
 
 ```text
-04-telemetry-ingestion.md
+04-data-ingestion.md.
 ```
