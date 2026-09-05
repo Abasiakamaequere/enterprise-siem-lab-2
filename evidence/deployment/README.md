@@ -29,8 +29,8 @@ Infrastructure Baseline
 | `02-ubuntu-server-version.png` | Confirms the Ubuntu Server platform and kernel baseline                          |
 | `03-splunk-status.png`         | Confirms that the Splunk daemon and supporting processes are running             |
 | `04-splunk-ports.png`          | Confirms Splunk network listeners including Web, management, and receiving ports |
-| `D03-splunk-web.png`           | Demonstrates operational access to the Splunk Web interface                      |
-| `14-system-baseline.png`       | Demonstrates filesystem and storage state of the SIEM server                     |
+| `05-splunk-web.png`            | Demonstrates operational access to the Splunk Web interface                      |
+| `06-system-baseline.png`       | Demonstrates filesystem and storage state of the SIEM server                     |
 
 ---
 
@@ -68,7 +68,7 @@ Relevant services include:
 
 ## 04 — Splunk Web Operational Validation
 
-![Splunk Web](D03-splunk-web.png)
+![Splunk Web](05-splunk-web.png)
 
 This evidence demonstrates successful access to the Splunk Web interface following deployment.
 
@@ -76,7 +76,7 @@ This evidence demonstrates successful access to the Splunk Web interface followi
 
 ## 05 — Infrastructure Baseline
 
-![System Baseline](14-system-baseline.png)
+![System Baseline](06-system-baseline.png)
 
 This evidence documents the server's filesystem and storage state during laboratory operation.
 
