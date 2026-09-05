@@ -18,7 +18,9 @@ The initial attempt to start Splunk used elevated privileges:
 
 ```bash
 sudo /opt/splunk/bin/splunk start --accept-license
-```Splunk rejected the root execution approach.
+```
+```
+Splunk rejected the root execution approach.
 ```
 This demonstrated that the Splunk service should not be operated using unrestricted root privileges.
 
