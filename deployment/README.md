@@ -112,7 +112,7 @@ The IPv6 communication path was identified as unreliable in the laboratory envir
 The download operation was modified to explicitly use IPv4:
 
 ```bash
-wget -4 -O splunk-10.4.2.deb "https://download.splunk.com/..."
+wget -4 -O splunk-10.4.2-33c3bf42cd73-linux-amd64.deb "https://download.splunk.com/..."
 ```
 
 This successfully bypassed the problematic IPv6 route.
@@ -153,7 +153,7 @@ The Windows host was used to acquire the large installation package, after which
 Example:
 
 ```powershell
-scp "$env:USERPROFILE\Downloads\splunk-10.4.2-linux-amd64.deb" `
+scp "$env:USERPROFILE\Downloads\splunk-10.4.2-33c3bf42cd73-linux-amd64.deb" `
 equere_splunkadmin@<LAB-IP>:/home/equere_splunkadmin/
 ```
 
