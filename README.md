@@ -406,6 +406,7 @@ evidence/
 ├── deployment/
 ├── telemetry/
 ├── detection/
+├── troubleshooting/
 └── recovery/
 ```
 
@@ -485,6 +486,7 @@ No recovery screenshot is fabricated where a dedicated recovery artifact was not
 │   ├── deployment/
 │   ├── telemetry/
 │   ├── detection/
+│   ├── troubleshooting/
 │   └── recovery/
 │
 ├── LICENSE
