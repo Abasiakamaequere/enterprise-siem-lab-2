@@ -184,7 +184,7 @@ Verified in Splunk
 index=* EventCode=1 (Image="*\\whoami.exe" OR CommandLine="*whoami*")
 ```
 
-The returned event showed the expected parent-child relationship (`whoami.exe` spawned via the command interpreter under PowerShell), confirming the adversary-emulation activity traversed the full endpoint-to-SIEM pipeline. This event is the basis for `investigations/LAB-002-controlled-reconnaissance.md` and the controlled-detection validation described in `detection/02-process-monitoring.md`.
+The returned event showed the expected parent-child relationship: `whoami.exe` spawned by `cmd.exe` (command line `cmd.exe /C whoami`), consistent with execution via `Invoke-AtomicTest` in the PowerShell session documented above. This confirmed the adversary-emulation activity traversed the full endpoint-to-SIEM pipeline. This event is the basis for `investigations/LAB-002-controlled-reconnaissance.md` and the controlled-detection validation described in `detection/02-process-monitoring.md`.
 
 ## Engineering Context
 
