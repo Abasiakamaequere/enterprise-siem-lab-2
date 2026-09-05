@@ -45,7 +45,7 @@ This distinction was important because the Splunk package itself had not yet bee
 
 The download command was modified to explicitly force IPv4.
 
-wget -4 -O splunk-10.4.2.deb "https://download.splunk.com/..."
+wget -4 -O splunk-10.4.2-33c3bf42cd73-linux-amd64.deb "https://download.splunk.com/..."
 
 The -4 option forced the connection to use IPv4 rather than IPv6.
 
@@ -91,7 +91,7 @@ After acquiring the Splunk Enterprise package on the Windows host, the package w
 The transfer used the Ubuntu server's SSH service.
 
 Example PowerShell command:
-scp "$env:USERPROFILE\Downloads\splunk-10.4.2-linux-amd64.deb" `
+scp "$env:USERPROFILE\Downloads\splunk-10.4.2-33c3bf42cd73-linux-amd64.deb" `
 equere_splunkadmin@<LAB-IP>:/home/equere_splunkadmin/
 
 The local laboratory IP address is intentionally represented as:
