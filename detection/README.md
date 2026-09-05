@@ -442,12 +442,12 @@ detection/
 
 # Next Stage
 
-The next stage defines the detection methodology used to convert the available Windows and Sysmon telemetry into practical SPL-based detections.
+The next stage defines the detection methodology used to convert the available Windows and Sysmon telemetry into practical SPL-based detections, beginning with authentication monitoring.
 
 See:
 
 ```text
-01-detection-strategy.md
+01-authentication-monitoring.md
 ```
 
 ---
