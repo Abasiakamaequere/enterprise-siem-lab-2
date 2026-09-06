@@ -278,6 +278,8 @@ Search
 Investigate
    ↓
 Assess
+   ↓
+Respond
 ```
 
 This establishes the foundation for more advanced detection engineering using controlled adversary emulation and multi-source telemetry correlation.
