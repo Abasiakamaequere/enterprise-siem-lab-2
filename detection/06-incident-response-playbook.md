@@ -42,7 +42,14 @@ None of the triggers below are, on their own, proof of malicious activity. Every
 
 ## Escalation Criteria
 Escalate if any of the following are true:
-* A successful logon immediately follows a burst of failures on the same account
+* **5 or more failed logon attempts for the same account within a 10-minute window.** This is a standard starting heuristic, not a value tuned against this lab's own traffic — there isn't yet enough background authentication volume here to know what a normal false-positive rate looks like, so treat it as a default to adjust once real usage patterns are established.
+```spl
+  index=* EventCode=4625
+  | bucket _time span=10m
+  | stats count by user, _time
+  | where count >= 5
+```
+* A successful logon (Event ID 4624) immediately follows failures meeting the threshold above, on the same account
 * The source host, source IP, or logon type is inconsistent with the account's normal pattern
 * The account is privileged or has access to sensitive systems
 * The failures continue after the affected user confirms they were not attempting to log in
@@ -75,7 +82,12 @@ Escalate if any of the following are true:
 ## Escalation Criteria
 Escalate if any of the following are true:
 * The parent-child relationship is inconsistent with normal application behavior (for example, an office application or browser spawning a command interpreter)
-* The command line contains encoded, obfuscated, or unusually long arguments
+* The command line exceeds roughly 300 characters, or contains Base64-style encoded blocks.** Length alone doesn't prove obfuscation, but it's a workable trigger for a closer read rather than a vague impression of "looks long":
+```spl
+  index=* EventCode=1
+  | eval cmdlen=len(CommandLine)
+  | where cmdlen > 300
+```
 * The executable runs from a temporary or user-writable directory with no clear administrative justification
 * The process is followed by unexpected network activity (see Playbook 3)
 
@@ -110,7 +122,13 @@ Escalate if any of the following are true:
 * The initiating process is itself already flagged under Playbook 2
 * The destination is external and not part of any known or expected service
 * The port or protocol is inconsistent with the process making the connection
-* The connection is part of a repeated or beaconing pattern rather than a single event
+* **3 or more connections to the same external destination within a 60-minute window.** Same caveat as the authentication threshold: a reasonable starting point, not a number derived from this lab's own traffic yet.
+```spl
+  index=* EventCode=3
+  | bucket _time span=1h
+  | stats count by DestinationIp, _time
+  | where count >= 3
+```
 
 ## If Escalating
 1. Identify the process and user account responsible for the connection.
