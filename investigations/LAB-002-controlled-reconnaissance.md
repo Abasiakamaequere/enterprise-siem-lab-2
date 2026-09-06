@@ -239,7 +239,26 @@ A production detection could be strengthened through:
 
 ---
 
-# 12. Conclusion
+# 12. Recommended Response
+
+This activity was generated deliberately as a controlled test, so no live response was required. The purpose of this section is to state what an analyst would do if the same pattern — `whoami.exe` spawned by `cmd.exe`, matching T1033 — were observed unexpectedly in a production environment, rather than as part of a planned exercise.
+
+Discovery commands like `whoami` are built into Windows and appear constantly in legitimate administrative and scripting activity. On their own, they are a weak signal. The response below assumes the activity was flagged because it occurred outside an expected pattern (unexpected account, unexpected time, unexpected parent process), not because the command itself is inherently suspicious.
+
+1. **Validate the account.** Confirm whether the user context under which the command ran was expected to be performing discovery activity, and whether that account's other recent activity is consistent with normal use.
+2. **Review the parent process chain.** The evidence in this case shows `whoami.exe` launched by `cmd.exe`. In a real triage, the next question is what launched `cmd.exe` — an interactive admin session, a scheduled task, a script, or something less expected such as a macro-enabled document or a remote-execution tool.
+3. **Check for follow-on activity.** Discovery is frequently a precursor step. The relevant follow-up is whether the same host or account shows subsequent network connections, credential-access attempts, or additional discovery commands (e.g., `net user`, `net group`, `systeminfo`) in the period immediately after.
+4. **Correlate with authentication telemetry.** Cross-reference the timestamp against Event IDs 4624/4625 on the same host to determine whether the discovery activity followed an unusual logon.
+5. **Preserve the evidence.** In this lab, the relevant evidence is already captured — `evidence/detection/13-whoami-detection-search.png` — and the underlying Splunk index retains the raw event.
+6. **Escalate the detection into standing monitoring.** Rather than relying on a one-off manual search, the validated query from this investigation was used as the basis for the automated Splunk alert described in `detection/02-process-monitoring.md`, so equivalent future activity is flagged without requiring a manual search to be re-run.
+7. **Determine whether containment is appropriate.** For an isolated, low-severity discovery event with no corroborating signals from steps 3–4, containment (e.g., isolating the host) would typically not be warranted. Containment becomes appropriate once discovery activity is correlated with other suspicious behavior.
+8. **Document the disposition.** Record the final assessment — expected, benign-but-unusual, or escalated — so the case has a stated conclusion rather than being left open.
+
+For this specific case, applying the above: the account and parent process (`cmd.exe`) were both expected given this was a planned Atomic Red Team execution, and no follow-on network or credential-access activity was observed because none was generated. The case is closed as **expected activity, no further action required**. The value of the exercise was not in generating a real incident, but in confirming that if this same pattern appeared unexpectedly, steps 1–6 above are executable against the telemetry actually available in this environment — not a theoretical checklist.
+
+---
+
+# 13. Conclusion
 
 LAB-002 demonstrates the transition from passive telemetry collection to active security validation.
 
