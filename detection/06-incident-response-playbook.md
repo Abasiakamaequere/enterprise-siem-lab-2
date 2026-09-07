@@ -24,6 +24,18 @@ None of the triggers below are, on their own, proof of malicious activity. Every
 
 ---
 
+# Preparation
+
+This playbook assumes the following are already true. If any of these fail, that's an infrastructure problem to fix before triaging an alert — not something to troubleshoot mid-investigation.
+
+* **Sysmon is running and its events are reaching the Windows Event Log.** Confirmed separately from the Splunk side — this repository specifically documents a case where Sysmon was active but its telemetry wasn't yet indexed (`02-process-monitoring.md`), so "Sysmon is installed" and "Sysmon telemetry is usable" are not the same check.
+* **The Splunk Universal Forwarder is running on the endpoint, with `outputs.conf` pointed at the correct receiver**, and TCP 9997 connectivity between endpoint and server is open (`evidence/telemetry/08-tcp-connectivity.png`).
+* **Splunk Enterprise is running under the dedicated `splunk` service account**, not root (`05-privilege-separation.md`).
+* **The index name used in a live search matches the environment**, not the wildcard `index=*` used throughout this documentation for portability. In this lab, that index is `main` (confirmed via `evidence/detection/13-whoami-detection-search.png`). Every SPL query in this playbook should be checked against the actual index before being trusted.
+* **The evidence folder for the relevant category exists** (`evidence/detection/` for detection-related cases) so screenshots captured mid-investigation have a defined destination rather than being saved ad hoc.
+
+---
+
 # Playbook 1 — Failed or Unusual Authentication Activity
 
 **Trigger:** Windows Security Event ID 4625 (failed logon), or a pattern of repeated 4625 events for a single account, as covered in `01-authentication-monitoring.md`.
@@ -195,6 +207,21 @@ Final Disposition
 ```
 
 A disposition of "expected activity, no further action" is a valid and complete outcome. The goal of this documentation is a closed, reviewable record — not a bias toward finding something wrong.
+
+---
+
+# Post-Incident
+
+This is a one-person lab, not a team — there's no retro meeting to schedule. What replaces it is updating the actual documents this playbook depends on, so the next case benefits from what the last one found.
+
+After closing a case, check whether any of the following apply:
+
+* **A threshold in this playbook fired incorrectly** — either a false positive (the number was too sensitive) or it should have triggered on real activity and didn't (too loose). Update the relevant number in Playbook 1, 2, or 3 directly, and note in the case record why it changed.
+* **The case involved a technique not covered by an existing playbook category.** Add a new Playbook section following the same structure (Trigger, Initial Checks, Common Benign Explanations, Escalation Criteria, If Escalating) rather than forcing it into one of the existing three.
+* **The case maps to a MITRE ATT&CK technique already documented elsewhere in this repository** (for example, T1033 in `../investigations/LAB-002-controlled-reconnaissance.md`). Cross-check whether that investigation file's own conclusions still hold, or whether this new case adds evidence worth appending to it.
+* **The underlying SPL query itself needs to change** — not just its threshold, but its logic (a new field, a corrected index name, an additional condition). Update the source detection file (`01`–`04`) directly, since this playbook's queries are meant to match what those files actually validate.
+
+A case that changes nothing is a valid outcome. Forcing a change out of every closed case is how you end up with detections that were never actually tested — the same failure mode as the reference structure this playbook was checked against, where every section existed but most were never filled in with anything real.
 
 ---
 
