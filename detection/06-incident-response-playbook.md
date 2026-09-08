@@ -22,6 +22,12 @@ Each section below covers one alert category and follows the same structure:
 
 None of the triggers below are, on their own, proof of malicious activity. Every category in this laboratory has already been documented with that caveat, and this playbook does not change that — it exists to make triage faster, not to make triage automatic.
 
+The SPL in each "If Escalating" section is written to be run directly, not adapted from a general-purpose search. Angle-bracket placeholders — `<AFFECTED_HOST>`, `<PROCESS_GUID>`, `<SUCCESSFUL_LOGON_TIME>`, and similar — stand in for values you already have from the case in front of you at that point in the triage; replace them and run the query as-is.
+
+---
+
+# Preparation
+
 ---
 
 # Preparation
@@ -66,10 +72,24 @@ Escalate if any of the following are true:
 * The account is privileged or has access to sensitive systems
 * The failures continue after the affected user confirms they were not attempting to log in
 
-## If Escalating
+### If Escalating
 1. Validate the affected account directly with its owner, where possible.
-2. Pivot to process telemetry (`02-process-monitoring.md`) for activity on the same host in the period immediately following any successful logon.
-3. Pivot to network telemetry (`03-network-monitoring.md`) for connections from the same host in the same window.
+2. Pivot to process telemetry for activity on the same host in the period immediately following the successful logon:
+```spl
+   index=* host=<AFFECTED_HOST> EventCode=1
+   | where _time > <SUCCESSFUL_LOGON_TIME>
+   | table _time host user Image ParentImage CommandLine
+   | sort _time
+```
+   (Full detection logic: `02-process-monitoring.md`)
+3. Pivot to network telemetry for connections from the same host in the same window:
+```spl
+   index=* host=<AFFECTED_HOST> EventCode=3
+   | where _time > <SUCCESSFUL_LOGON_TIME>
+   | table _time host user Image DestinationIp DestinationPort
+   | sort _time
+```
+   (Full detection logic: `03-network-monitoring.md`)
 4. Preserve the relevant raw events and any supporting screenshots.
 5. Record a disposition (see Documentation Standard below) even if the conclusion is benign.
 
@@ -105,9 +125,26 @@ Escalate if any of the following are true:
 
 ## If Escalating
 1. Identify the user account associated with the execution and confirm whether that activity was expected.
-2. Trace the parent process chain as far back as available telemetry allows.
-3. Cross-reference authentication telemetry (Playbook 1) for the same host and time window.
-4. Cross-reference network telemetry (Playbook 3) for connections initiated by the same process.
+2. Trace the parent process chain one hop at a time. Start with the flagged event's own `ProcessGuid`, then walk backward by searching for the event whose `ProcessGuid` matches the current event's `ParentProcessGuid`, repeating until the chain reaches a process with no further parent in the index:
+```spl
+   index=* EventCode=1 ProcessGuid="<PROCESS_GUID>"
+   | table _time host user Image ParentImage ParentProcessGuid CommandLine
+```
+   Re-run with `ProcessGuid="<PARENT_PROCESS_GUID_FROM_PREVIOUS_STEP>"` for each hop back. This is the same technique used to confirm the `whoami.exe` → `cmd.exe` link in `evidence/detection/13-whoami-detection-search.png`.
+3. Cross-reference authentication telemetry for the same host in the 30 minutes before the process executed:
+```spl
+   index=* host=<AFFECTED_HOST> (EventCode=4624 OR EventCode=4625)
+   | where _time > relative_time(<PROCESS_TIME>, "-30m") AND _time < <PROCESS_TIME>
+   | table _time host user EventCode
+   | sort _time
+```
+   (Full detection logic: `01-authentication-monitoring.md`)
+4. Cross-reference network telemetry for connections initiated by the same process:
+```spl
+   index=* EventCode=3 ProcessGuid="<PROCESS_GUID>"
+   | table _time host user Image DestinationIp DestinationPort
+```
+   (Full detection logic: `03-network-monitoring.md`)
 5. Preserve the relevant raw events and any supporting screenshots.
 6. Record a disposition even if the conclusion is benign.
 
@@ -143,9 +180,26 @@ Escalate if any of the following are true:
 ```
 
 ## If Escalating
-1. Identify the process and user account responsible for the connection.
-2. Cross-reference process telemetry (Playbook 2) for the process's own origin and command line.
-3. Cross-reference authentication telemetry (Playbook 1) for the same host and time window.
+1. Identify the process and user account responsible for the connection directly from the flagged event:
+```spl
+   index=* EventCode=3 DestinationIp="<DESTINATION_IP>"
+   | table _time host user Image SourceIp SourcePort DestinationIp DestinationPort
+```
+2. Cross-reference process telemetry for that process's own origin and command line:
+```spl
+   index=* EventCode=1 Image="<IMAGE_PATH_FROM_STEP_1>"
+   | table _time host user Image ParentImage CommandLine
+   | sort _time
+```
+   (Full detection logic: `02-process-monitoring.md`)
+3. Cross-reference authentication telemetry for the same host in the 30 minutes before the connection:
+```spl
+   index=* host=<AFFECTED_HOST> (EventCode=4624 OR EventCode=4625)
+   | where _time > relative_time(<CONNECTION_TIME>, "-30m") AND _time < <CONNECTION_TIME>
+   | table _time host user EventCode
+   | sort _time
+```
+   (Full detection logic: `01-authentication-monitoring.md`)
 4. Preserve the relevant raw events and any supporting screenshots.
 5. Record a disposition even if the conclusion is benign.
 
