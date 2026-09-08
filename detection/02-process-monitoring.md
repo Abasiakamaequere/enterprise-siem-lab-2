@@ -503,5 +503,4 @@ This allows process activity to be examined alongside outbound connections and p
 
 See:
 
-```text
 03-network-monitoring.md
