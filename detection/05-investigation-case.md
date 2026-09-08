@@ -532,3 +532,5 @@ Conclusion
 ```
 
 The objective is to demonstrate not only that the SIEM was deployed, but that it can be used as an operational security-analysis platform.
+
+The reusable procedure referenced throughout this walkthrough — decision tree, escalation criteria, and documentation standard — has been extracted into its own document. See `06-incident-response-playbook.md`.
