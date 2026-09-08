@@ -441,5 +441,4 @@ Rather than examining authentication, process, and network events separately, th
 
 See:
 
-```text
 04-correlation-detection.md
