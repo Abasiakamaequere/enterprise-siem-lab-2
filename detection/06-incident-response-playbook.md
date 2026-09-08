@@ -28,10 +28,6 @@ The SPL in each "If Escalating" section is written to be run directly, not adapt
 
 # Preparation
 
----
-
-# Preparation
-
 This playbook assumes the following are already true. If any of these fail, that's an infrastructure problem to fix before triaging an alert — not something to troubleshoot mid-investigation.
 
 * **Sysmon is running and its events are reaching the Windows Event Log.** Confirmed separately from the Splunk side — this repository specifically documents a case where Sysmon was active but its telemetry wasn't yet indexed (`02-process-monitoring.md`), so "Sysmon is installed" and "Sysmon telemetry is usable" are not the same check.
@@ -72,7 +68,7 @@ Escalate if any of the following are true:
 * The account is privileged or has access to sensitive systems
 * The failures continue after the affected user confirms they were not attempting to log in
 
-### If Escalating
+## If Escalating
 1. Validate the affected account directly with its owner, where possible.
 2. Pivot to process telemetry for activity on the same host in the period immediately following the successful logon:
 ```spl
@@ -114,7 +110,7 @@ Escalate if any of the following are true:
 ## Escalation Criteria
 Escalate if any of the following are true:
 * The parent-child relationship is inconsistent with normal application behavior (for example, an office application or browser spawning a command interpreter)
-* The command line exceeds roughly 300 characters, or contains Base64-style encoded blocks.** Length alone doesn't prove obfuscation, but it's a workable trigger for a closer read rather than a vague impression of "looks long":
+* **The command line exceeds roughly 300 characters, or contains Base64-style encoded blocks.** Length alone doesn't prove obfuscation, but it's a workable trigger for a closer read rather than a vague impression of "looks long":
 ```spl
   index=* EventCode=1
   | eval cmdlen=len(CommandLine)
