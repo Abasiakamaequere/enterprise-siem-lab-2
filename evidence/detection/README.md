@@ -54,7 +54,7 @@ Authentication telemetry provides a foundation for monitoring account activity a
 
 ![Sysmon Process Creation](12-process-creation.png)
 
-This evidence demonstrates Sysmon Event ID 1 process creation activity on the Windows endpoint.
+This evidence demonstrates Sysmon Event ID 1 process creation telemetry, searchable in Splunk shortly after ingestion.
 
 Process creation telemetry provides visibility into programs executed on the endpoint and forms an important source of data for security monitoring and threat detection.
 
