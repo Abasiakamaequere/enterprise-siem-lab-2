@@ -19,10 +19,8 @@ The initial attempt to start Splunk used elevated privileges:
 ```bash
 sudo /opt/splunk/bin/splunk start --accept-license
 ```
-```
-Splunk rejected the root execution approach.
-```
-This demonstrated that the Splunk service should not be operated using unrestricted root privileges.
+
+Splunk rejected the root execution approach. This demonstrated that the Splunk service should not be operated using unrestricted root privileges.
 
 ## Security Decision
 
@@ -175,7 +173,7 @@ A dedicated service account reduces the privileges available to the application 
 
 Changing the service identity alone is insufficient if the application files remain inaccessible to that account.
 
-The ```/opt/splunk``` directory was therefore reassigned to:
+The `/opt/splunk` directory was therefore reassigned to:
 
 ```text
 splunk:splunk
