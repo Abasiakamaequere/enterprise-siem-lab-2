@@ -435,7 +435,8 @@ detection/
 ├── 02-process-monitoring.md
 ├── 03-network-monitoring.md
 ├── 04-correlation-detection.md
-└── 05-investigation-case.md
+├── 05-investigation-case.md
+└── 06-incident-response-playbook.md
 ```
 
 ---
